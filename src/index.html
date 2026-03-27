@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图像背景移除 — 3秒完成</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <h1>🖼️ 图像背景移除</h1>
+      <p class="slogan">3秒去除背景 · 直接下载透明图</p>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Upload Area -->
+      <div id="upload-area" class="upload-area">
+        <div class="upload-content">
+          <div class="upload-icon">📤</div>
+          <p class="upload-text">拖拽图片到这里，或<span class="link">点击选择</span></p>
+          <p class="upload-hint">支持 JPG、PNG、WebP，最大 10MB</p>
+          <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" hidden>
+        </div>
+      </div>
+
+      <!-- Preview Area (hidden by default) -->
+      <div id="preview-area" class="preview-area" hidden>
+        <div class="preview-wrapper">
+          <div class="preview-bg"></div>
+          <img id="preview-image" src="" alt="处理结果预览">
+        </div>
+        <div class="preview-actions">
+          <button id="download-btn" class="btn btn-primary">⬇️ 下载透明背景图</button>
+          <button id="retry-btn" class="btn btn-secondary">🔄 处理另一张</button>
+        </div>
+      </div>
+
+      <!-- Loading State (hidden by default) -->
+      <div id="loading-area" class="loading-area" hidden>
+        <div class="spinner"></div>
+        <p class="loading-text">正在移除背景…</p>
+        <p class="loading-hint">通常需要 2-5 秒，请耐心等待</p>
+      </div>
+
+      <!-- Error State (hidden by default) -->
+      <div id="error-area" class="error-area" hidden>
+        <div class="error-icon">❌</div>
+        <p class="error-message" id="error-message">处理失败，请换一张图片试试</p>
+        <button id="error-retry-btn" class="btn btn-secondary">🔄 重试</button>
+      </div>
+
+      <!-- Rate Limit State (hidden by default) -->
+      <div id="limit-area" class="limit-area" hidden>
+        <div class="limit-icon">⚠️</div>
+        <p class="limit-message">今日使用次数已用完（每天10次）</p>
+        <p class="limit-hint">请明天再来 👋</p>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <p>隐私保护 · 图片不存储 · <a href="https://www.remove.bg/api" target="_blank">Powered by Remove.bg API</a></p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
