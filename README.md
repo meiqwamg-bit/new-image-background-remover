@@ -2,7 +2,7 @@
 
 > 🖼️ 极简在线图像背景移除工具 — 3秒完成，上传即走，不存图片
 
-[在线体验] | [需求文档](./docs/removebg-mvp.md)
+[在线体验] | [需求文档](./docs/removebg-mvp.md) | [前端说明](./frontend/README.md)
 
 ---
 
@@ -13,6 +13,31 @@
 - ✅ 支持 JPG / PNG / WebP
 - ✅ 移动端友好
 - ✅ 免费使用，无需注册
+
+---
+
+## 项目结构
+
+```
+new-image-background-remover/
+├── frontend/                    # Next.js + Tailwind CSS 前端
+│   ├── src/
+│   │   ├── app/                 # Next.js App Router
+│   │   │   ├── page.tsx         # 主页面
+│   │   │   ├── layout.tsx       # 布局
+│   │   │   └── globals.css      # 全局样式
+│   │   └── lib/                 # 工具函数
+│   ├── public/                  # 静态资源
+│   ├── .env.local.example       # 环境变量示例
+│   └── README.md                # 前端说明
+├── workers/
+│   └── removebg/
+│       └── index.js             # Cloudflare Worker
+├── docs/
+│   └── removebg-mvp.md          # MVP 需求文档
+├── wrangler.toml                # Worker 配置
+└── README.md
+```
 
 ---
 
@@ -28,24 +53,17 @@ Remove.bg API
 用户下载
 ```
 
-- **前端**：原生 HTML/CSS/JS，无框架依赖
+- **前端**：Next.js 15 + Tailwind CSS + TypeScript
 - **后端**：Cloudflare Worker（中转层，隐藏 API Key）
 - **图片处理**：Remove.bg API
-- **托管**：Cloudflare Pages + Cloudflare Workers
+- **托管**：Cloudflare Pages
 - **费用**：MVP 阶段 $0
 
 ---
 
-## 本地开发
+## 快速部署
 
-### 前端（直接打开）
-
-```bash
-# 直接用浏览器打开 src/index.html 即可
-open src/index.html
-```
-
-### Worker 开发
+### 1. 部署 Worker
 
 ```bash
 # 安装 Wrangler CLI
@@ -54,37 +72,50 @@ npm install -g wrangler
 # 登录 Cloudflare
 wrangler login
 
-# 本地预览 Worker
-wrangler dev
+# 创建 KV Namespace（用于限流）
+wrangler kv:namespace create "RATE_LIMIT_KV"
+
+# 编辑 workers/removebg/index.js 中的 KV namespace binding
+# 编辑 wrangler.toml 填入你的 KV namespace ID
 
 # 部署 Worker
 wrangler deploy
 ```
 
-### 配置
+### 2. 部署前端
 
-1. 复制 `wrangler.toml.example` 为 `wrangler.toml`
-2. 在 [Remove.bg](https://www.remove.bg/api) 申请 API Key
-3. 在 Cloudflare Workers 设置环境变量 `REMOVE_BG_API_KEY`
+```bash
+cd frontend
+
+# 安装依赖
+npm install
+
+# 配置环境变量
+cp .env.local.example .env.local
+# 编辑 .env.local，填入 Worker URL
+
+# 本地测试
+npm run dev
+
+# 构建并部署到 Cloudflare Pages
+npm run build
+# 然后在 Cloudflare Dashboard 上传 .next 目录
+```
 
 ---
 
-## 项目结构
+## 环境变量
 
+### 前端（frontend/.env.local）
+
+```env
+NEXT_PUBLIC_WORKER_URL=https://your-worker.workers.dev/remove
 ```
-new-image-background-remover/
-├── src/
-│   ├── index.html       # 主页面
-│   ├── style.css        # 样式
-│   └── app.js           # 前端逻辑
-├── workers/
-│   └── removebg/
-│       └── index.js     # Cloudflare Worker
-├── docs/
-│   └── removebg-mvp.md  # MVP 需求文档
-├── wrangler.toml        # Worker 配置
-├── .gitignore
-└── README.md
+
+### Worker（wrangler.toml / Cloudflare Dashboard）
+
+```env
+REMOVE_BG_API_KEY=your-remove.bg-api-key
 ```
 
 ---
