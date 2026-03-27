@@ -5,7 +5,8 @@ import { Upload, Download, RefreshCw, AlertCircle, Clock, CheckCircle2, Loader2 
 
 type PageState = "empty" | "loading" | "success" | "error" | "limit";
 
-const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://your-worker.workers.dev/remove";
+// API Route 地址（开发环境和生产环境都走同域 API）
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api/removebg";
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const MAX_DAILY_REQUESTS = 10;
 
@@ -75,7 +76,7 @@ export default function Home() {
       formData.append("size", "auto");
       formData.append("format", "png");
 
-      const response = await fetch(WORKER_URL, {
+      const response = await fetch(API_URL, {
         method: "POST",
         body: formData,
       });
